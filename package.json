@@ -1,12 +1,12 @@
 {
   "name": "amon-relay",
-  "description": "Smart DataCenter Monitoring Relay component",
-  "version": "1.0.1",
+  "description": "Triton Amon relay",
+  "version": "2.0.0",
   "author": "Joyent (joyent.com)",
   "private": true,
   "dependencies": {
-    "amon-common": "*",
-    "amon-plugins": "*",
+    "amon-common": "git+https://github.com/joyent/node-amon-common.git#TRITON-1666",
+    "amon-plugins": "git+https://github.com/joyent/node-amon-plugins.git#TRITON-1666",
 
     "sdc-clients": "git+https://github.com/joyent/node-sdc-clients.git#beace1d",
     "restify": "git+https://github.com/trentm/node-restify.git#7535bb3",
@@ -25,11 +25,8 @@
     "postinstall": "./pkg/postinstall.sh",
     "preuninstall": "./pkg/preuninstall.sh"
   },
-  "bin": {
-    "bunyan": "./bin/bunyan"
-  },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=6.0"
   },
   "license": "MPL-2.0"
 }
