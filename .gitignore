@@ -1,0 +1,12 @@
+/node_modules
+/npm-debug.log
+/tmp
+/TODO.*
+.DS_Store
+/tmp
+/bits
+/build
+/smf/manifests/*.xml
+.*.swp
+/amon-relay-*.tgz
+/amon-relay-*.manifest
