@@ -7,16 +7,18 @@
   "dependencies": {
     "amon-common": "git+https://github.com/joyent/node-amon-common.git#TRITON-1666",
     "amon-plugins": "git+https://github.com/joyent/node-amon-plugins.git#TRITON-1666",
-
-    "sdc-clients": "git+https://github.com/joyent/node-sdc-clients.git#beace1d",
-    "restify": "git+https://github.com/trentm/node-restify.git#7535bb3",
-    "assert-plus": "0.1.2",
+    "assert-plus": "1.0.0",
     "backoff": "2.4.0",
-    "bunyan": "0.21.3",
-    "async": "0.1.22",
+    "bunyan": "1.8.12",
     "nopt": "2.1.1",
     "once": "1.3.2",
-    "libuuid": "0.1.2",
+    "uuid": "3.3.2"
+  },
+  "XXX dependencies": {
+    "sdc-clients": "git+https://github.com/joyent/node-sdc-clients.git#beace1d",
+    "restify": "git+https://github.com/trentm/node-restify.git#7535bb3",
+    "async": "0.1.22 XXX replace with vasync",
+    "libuuid": "0.1.2 XXX node-uuid",
     "zsock": "1.3.1",
     "zutil": "0.2.1"
   },
