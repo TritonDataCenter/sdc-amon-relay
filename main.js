@@ -32,11 +32,7 @@ var bunyan = require('bunyan');
 var restify = require('restify');
 var async = require('async');
 var nopt = require('nopt');
-var zutil;
-if (process.platform === 'sunos' ||
-        process.platform === 'solaris' /* node#3944 */) {
-    zutil = require('zutil');
-}
+var zutil = require('zutil');
 
 var App = require('./lib/app');
 var amonCommon = require('amon-common'),
@@ -208,10 +204,6 @@ function ensureDataDir(next) {
 
 /**
  * Get list of all zones (including non-running zones).
- *
- * `zutil.listZones()` does not include down zones. It includes 'running'
- * zones and sometimes zones that are currently 'shutting_down' -- though
- * I'm not sure of the exact details of the latter.
  *
  * @param callback {Function} `function (err, zonenames)` where 'err' is
  *    an Error instance or null and 'zonenames' is a list of
