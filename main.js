@@ -132,17 +132,11 @@ function loadConfig(rawOpts, cb) {
             if (rawOpts['data-dir'] !== undefined) {
                 config.dataDir = rawOpts['data-dir'];
             }
-            if (rawOpts['master-url'] !== undefined) {
-                config.masterUrl = rawOpts['master-url'];
-            }
             if (rawOpts['poll'] !== undefined) {
                 config.poll = rawOpts['poll'];
             }
             if (rawOpts['socket'] !== undefined) {
                 config.socket = rawOpts['socket'];
-            }
-            if (rawOpts['compute-node-uuid'] !== undefined) {
-                config.computeNodeUuid = rawOpts['compute-node-uuid'];
             }
             next();
         },
@@ -223,27 +217,23 @@ function listAllZones(callback) {
 
 // Get the compute node UUID.
 function ensureComputeNodeUuid(next) {
-    if (!config.computeNodeUuid) {
-        log.info('Getting compute node UUID from `sysinfo`.');
-        execFile('/usr/bin/sysinfo', [], function (err, stdout, stderr) {
-            if (err)
-                return next(format(
-                    'Error calling sysinfo: %s stdout="%s" stderr="%s"',
-                    err, stdout, stderr));
-            try {
-                var sysinfo = JSON.parse(stdout);
-            } catch (ex) {
-                return next(format(
-                    'Error parsing sysinfo output: %s output="%s"',
-                    ex, stdout));
-            }
-            log.info('Compute node UUID: %s', sysinfo.UUID);
-            config.computeNodeUuid = sysinfo.UUID;
-            return next();
-        });
-    } else {
+    log.info('Getting compute node UUID from `sysinfo`.');
+    execFile('/usr/bin/sysinfo', [], function (err, stdout, stderr) {
+        if (err)
+            return next(format(
+                'Error calling sysinfo: %s stdout="%s" stderr="%s"',
+                err, stdout, stderr));
+        try {
+            var sysinfo = JSON.parse(stdout);
+        } catch (ex) {
+            return next(format(
+                'Error parsing sysinfo output: %s output="%s"',
+                ex, stdout));
+        }
+        log.info('Compute node UUID: %s', sysinfo.UUID);
+        config.computeNodeUuid = sysinfo.UUID;
         return next();
-    }
+    });
 }
 
 
@@ -649,12 +639,6 @@ function printHelp() {
     p('  -h, --help     Print this help info and exit.');
     p('  -v, --verbose  Once for DEBUG log output. Twice for TRACE.');
     p('');
-    p('  -m MASTER-URL, --master-url MASTER-URL');
-    p('       The Amon Master API base url.');
-    p('  -n UUID, --compute-node-uuid UUID');
-    p('       UUID of the compute node on which this relay is');
-    p('       running. If not given, it will be determined from');
-    p('       `/usr/bin/sysinfo`.');
     p('  -D DIR, --data-dir DIR');
     p('       Path to a directory to use for working data storage.');
     p('       This is all cache data, i.e. can be restored. Typically');
@@ -680,17 +664,13 @@ function main() {
         'help': Boolean,
         'verbose': [Boolean, Array],
         'data-dir': String,
-        'master-url': String,
         'poll': Number,
-        'socket': [String],
-        'all-zones': Boolean
+        'socket': [String]
     };
     var shortOpts = {
         'h': ['--help'],
         'v': ['--verbose'],
         'D': ['--data-dir'],
-        'm': ['--master-url'],
-        'n': ['--compute-node-uuid'],
         'p': ['--poll'],
         's': ['--socket']
     };
