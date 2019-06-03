@@ -125,7 +125,6 @@ function loadConfig(rawOpts, cb) {
             config.dataDir = DEFAULT_DATA_DIR;
             config.poll = DEFAULT_POLL;
             config.socket = DEFAULT_SOCKET;
-            config.allZones = false;
             next();
         },
 
@@ -141,9 +140,6 @@ function loadConfig(rawOpts, cb) {
             }
             if (rawOpts['socket'] !== undefined) {
                 config.socket = rawOpts['socket'];
-            }
-            if (rawOpts['all-zones'] !== undefined) {
-                config.allZones = rawOpts['all-zones'];
             }
             if (rawOpts['compute-node-uuid'] !== undefined) {
                 config.computeNodeUuid = rawOpts['compute-node-uuid'];
@@ -290,9 +286,6 @@ function startApp(app, callback) {
  */
 function startZoneEventWatcher(next) {
     log.info('startZoneEventWatcher');
-    if (!config.allZones) {
-        return next();
-    }
     var zoneEventWatcher = new ZoneEventWatcher(log);
     zoneEventWatcher.on('zoneUp', function (zonename) {
         log.info({zonename: zonename}, 'handle zoneUp event');
@@ -333,17 +326,6 @@ function updateZoneApps(next) {
     var isSelfHeal = (next === undefined);
     log.info({isSelfHeal: isSelfHeal}, 'updateZoneApps');
     var i, app;
-
-    // Handle dev-case of only listening in the current zone (presumed
-    // to be the global zone).
-    if (!config.allZones) {
-        if (! zoneApps['global']) {
-            app = createGlobalZoneApp();
-            zoneApps['global'] = app;
-            startApp(app);
-        }
-        return (next && next());
-    }
 
     // Get a working list of current zonenames.
     var existingZonenames = Object.keys(zoneApps);
@@ -685,12 +667,6 @@ function printHelp() {
     p('       The socket path on which to listen. Normally this is');
     p('       the path inside the target zone at which the zone will');
     p('       listen on a "zsock". Default: ' + DEFAULT_SOCKET);
-    p('       For dev this may be a port *number* to facilitate');
-    p('       using curl and using off of SmartOS.');
-    p('  -Z, --all-zones');
-    p('       Setup socket in all zones. By default we only listen');
-    p('       in the current zone (presumed to be the global).');
-    p('       This is incompatible with a port number of "-s".');
     /* END JSSTYLED */
 }
 
@@ -706,7 +682,7 @@ function main() {
         'data-dir': String,
         'master-url': String,
         'poll': Number,
-        'socket': [Number, String],
+        'socket': [String],
         'all-zones': Boolean
     };
     var shortOpts = {
@@ -716,8 +692,7 @@ function main() {
         'm': ['--master-url'],
         'n': ['--compute-node-uuid'],
         'p': ['--poll'],
-        's': ['--socket'],
-        'Z': ['--all-zones']
+        's': ['--socket']
     };
     var rawOpts = nopt(longOpts, shortOpts, process.argv, 2);
     if (rawOpts.help) {
@@ -739,11 +714,6 @@ function main() {
         console.error('unknown option%s: -%s\n',
             (extraOpts.length === 1 ? '' : 's'), extraOpts.join(', -'));
         usage(1);
-    }
-
-    // Guards on options
-    if (rawOpts['all-zones'] && typeof (rawOpts.socket) === 'number') {
-        usage(1, 'cannot use "-Z" and a port number to "-s"');
     }
 
     async.series([
