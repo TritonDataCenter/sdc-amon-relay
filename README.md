@@ -1,8 +1,12 @@
 # sdc-amon-relay
 
+**This is an experimental repository and is not yet production-ready**
+
+*For now, the actual amon relay code used by Triton/Manta components is available at https://github.com/joyent/sdc-amon/*
+
 This repository is part of the Joyent Triton project. See the [contribution
-guidelines](https://github.com/joyent/triton/blob/master/CONTRIBUTING.md) --
-*Triton does not use GitHub PRs* -- and general documentation at the main
+guidelines](https://github.com/joyent/triton/blob/master/CONTRIBUTING.md)
+and general documentation at the main
 [Triton project](https://github.com/joyent/triton) page.
 
 The Triton Amon relay. This Triton component is deployed to all server
@@ -37,9 +41,6 @@ repository (typically updates.joyent.com), use:
 Before commit, ensure that the following passes:
 
     make check
-
-Also see the note at the top that https://cr.joyent.us is used for code review
-for this repo.
 
 ### Releasing
 
